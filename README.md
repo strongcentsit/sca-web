@@ -15,6 +15,13 @@ assets/
   js/
     main.js               Mobile nav (hamburger) toggle
   images/                Logo and photography (grayscale via CSS filter)
+favicon.ico              Multi-size icon (16/32/48px) for browser tabs and Google search results
+favicon-16x16.png        \
+favicon-32x32.png         > Standalone PNG favicons referenced directly in <head>
+apple-touch-icon.png     / iOS home-screen icon (180x180, opaque white background)
+android-chrome-192x192.png \
+android-chrome-512x512.png  > Referenced from site.webmanifest for Android/PWA install icons
+site.webmanifest        PWA manifest listing the Android icons, theme and background color
 .claude/launch.json      Local dev server config (used by the Claude Code browser preview)
 ```
 
@@ -67,6 +74,19 @@ Every push to `main` redeploys automatically — no CI config needed for a plain
 ### Manual/self-hosted (e.g. shared hosting, VPS, cPanel)
 
 Upload the contents of the repo (`index.html` and the `assets/` folder) to the web server's public root (e.g. `public_html/`) via FTP/SFTP or the host's file manager. No server-side runtime is required — any web server that can serve static files (Apache, Nginx, IIS) works.
+
+> **Current production status:** `strongcents.lk` is already live, serving a different, existing site (a separate React/Vite build). This repo is the redesign and is not yet what visitors to `strongcents.lk` see. Cutting the domain over — updating DNS/hosting to point at wherever this repo gets deployed — is a manual step outside this repo; do that deliberately once the redesign is approved, not as a side effect of pushing here.
+
+## Favicon & Google Search indexing
+
+The root-level `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `android-chrome-192x192.png`/`android-chrome-512x512.png` and `site.webmanifest` were generated from a 48×48 "SCA" monogram source using high-quality bicubic upscaling (no AI upscaling — the 512×512 and 180×180 versions are honestly soft/blurred rather than fake-detailed, since the true source is small). If a higher-resolution master logo becomes available later, regenerate the larger sizes from that instead for a crisper result.
+
+For the favicon to actually show up in Google search results, three things need to be true, and only the first is something this repo controls:
+1. **The page serves a valid, crawlable icon** — done here via the `<link rel="icon">` tags in `index.html`'s `<head>`.
+2. **The site is verified in Google Search Console** for whichever domain ends up serving it (`strongcents.lk` once cut over, or the GitHub Pages/host URL if that's the canonical one). This requires access to the Google account that owns/manages `strongcents.lk` — it can't be done from this repo or by an AI assistant. In Search Console: **Settings → Ownership verification**, or add the property fresh if it isn't already verified.
+3. **Google has crawled/indexed the page since the favicon was added.** After verifying, use **URL Inspection → Request Indexing** on the homepage to speed this up; otherwise Google will pick it up on its next regular crawl (can take days to weeks). Favicons are also cached separately from the page and can lag behind even after reindexing.
+
+Since `strongcents.lk` currently points at a different, already-indexed site, don't request reindexing until after the domain actually serves this redesign — otherwise Google will (re-)index the old site's content, not this one.
 
 ## Notes for future edits
 
